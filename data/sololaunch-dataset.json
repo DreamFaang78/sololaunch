@@ -1,0 +1,149 @@
+{
+  "name": "SoloLaunch Community & Ecosystem Dataset",
+  "version": "1.0.0",
+  "license": "MIT",
+  "generated_at": "2026-10-11T12:00:00Z",
+  "author": "DreamFaang78 (https://github.com/DreamFaang78)",
+  "repository": "https://github.com/DreamFaang78/sololaunch",
+  "website": "https://sololaunch.alphacreation.online",
+  "rule": "Every stat shows verified source origin and timestamp",
+  "categories": {
+    "repos": [
+      {
+        "id": "r1",
+        "name": "next.js",
+        "owner": "vercel",
+        "description": "The React Framework – production-ready for full-stack apps.",
+        "stars": 128400,
+        "forks": 27100,
+        "issues": 3240,
+        "language": "JavaScript",
+        "license": "MIT",
+        "last_commit": "2026-10-11T10:00:00Z",
+        "topics": ["react", "framework", "ssr", "typescript"],
+        "url": "https://github.com/vercel/next.js",
+        "source": "GitHub API",
+        "trending": true,
+        "weekly_growth_pct": 12
+      },
+      {
+        "id": "r2",
+        "name": "vscode",
+        "owner": "microsoft",
+        "description": "Visual Studio Code – open source code editor built on web technologies.",
+        "stars": 165200,
+        "forks": 29800,
+        "issues": 7400,
+        "language": "TypeScript",
+        "license": "MIT",
+        "last_commit": "2026-10-11T08:00:00Z",
+        "topics": ["editor", "typescript", "electron", "dev-tools"],
+        "url": "https://github.com/microsoft/vscode",
+        "source": "GitHub API",
+        "trending": true,
+        "weekly_growth_pct": 8
+      },
+      {
+        "id": "r3",
+        "name": "astro",
+        "owner": "astro-build",
+        "description": "Build faster websites with a next-gen island architecture.",
+        "stars": 48900,
+        "forks": 2500,
+        "issues": 640,
+        "language": "TypeScript",
+        "license": "MIT",
+        "last_commit": "2026-10-11T11:00:00Z",
+        "topics": ["astro", "static-site", "web", "performance"],
+        "url": "https://github.com/astro-build/astro",
+        "source": "GitHub API",
+        "trending": true,
+        "weekly_growth_pct": 34
+      },
+      {
+        "id": "r5",
+        "name": "ion",
+        "owner": "sst",
+        "description": "SST v3 – Deploy fullstack apps to your own AWS account.",
+        "stars": 5800,
+        "forks": 340,
+        "issues": 112,
+        "language": "TypeScript",
+        "license": "MIT",
+        "last_commit": "2026-10-11T09:00:00Z",
+        "topics": ["aws", "serverless", "iac", "typescript"],
+        "url": "https://github.com/sst/ion",
+        "source": "GitHub API",
+        "trending": true,
+        "weekly_growth_pct": 67
+      },
+      {
+        "id": "r7",
+        "name": "hono",
+        "owner": "honojs",
+        "description": "Fast, Lightweight, Web-standards framework for Cloudflare, Deno, Bun, AWS Lambda.",
+        "stars": 21700,
+        "forks": 620,
+        "issues": 88,
+        "language": "TypeScript",
+        "license": "MIT",
+        "last_commit": "2026-10-11T04:00:00Z",
+        "topics": ["web-framework", "lambda", "edge"],
+        "url": "https://github.com/honojs/hono",
+        "source": "GitHub API",
+        "trending": true,
+        "weekly_growth_pct": 58
+      }
+    ],
+    "software": [
+      {
+        "id": "p1",
+        "name": "zod",
+        "registry": "npm",
+        "description": "TypeScript-first schema validation with static type inference.",
+        "weekly_downloads": 24200000,
+        "latest_version": "3.24.2",
+        "license": "MIT",
+        "growth_pct": 8,
+        "source": "npm Registry API",
+        "url": "https://www.npmjs.com/package/zod"
+      },
+      {
+        "id": "p3",
+        "name": "fastapi",
+        "registry": "pypi",
+        "description": "FastAPI framework, high performance, easy to learn, fast to code.",
+        "weekly_downloads": 18400000,
+        "latest_version": "0.115.6",
+        "license": "MIT",
+        "growth_pct": 14,
+        "source": "PyPI JSON API + pypistats",
+        "url": "https://pypi.org/project/fastapi/"
+      }
+    ],
+    "apps": [
+      {
+        "id": "a1",
+        "name": "Plausible Analytics",
+        "tagline": "Simple and privacy-friendly alternative to Google Analytics",
+        "maker": "Uku Taht",
+        "upvotes": 412,
+        "stars": 19400,
+        "url": "https://github.com/plausible/analytics",
+        "source": "GitHub API + Community",
+        "solo_dev": true
+      },
+      {
+        "id": "a2",
+        "name": "Cal.com",
+        "tagline": "Open source scheduling infrastructure for everyone",
+        "maker": "Peer Richelsen",
+        "upvotes": 348,
+        "stars": 33100,
+        "url": "https://github.com/calcom/cal.com",
+        "source": "GitHub API + Community",
+        "solo_dev": false
+      }
+    ]
+  }
+}

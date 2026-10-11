@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build and outputs
+dist/
+.astro/
+build/
+.output/
+
+# SST and AWS
+.sst/
+.aws/
+cdk.out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.pem
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

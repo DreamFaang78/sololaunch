@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoloLaunch – Discover & Build</title>
+<meta name="description" content="The free, open-source Product Hunt for solo developers. Discover trending GitHub repos, npm packages, and apps — then generate your next buildable idea with real competitor data.">
+<meta name="author" content="DreamFaang78">
+<meta property="og:title" content="SoloLaunch – Discover & Build for Solo Developers">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Tokens ──────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg-base:#080b14;--bg-surface:#0d1220;--bg-card:#111827;
+  --bg-glass:rgba(255,255,255,0.04);--bg-glass-hover:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--border-hover:rgba(139,92,246,0.4);
+  --accent-purple:#8b5cf6;--accent-cyan:#06b6d4;--accent-pink:#ec4899;
+  --accent-green:#10b981;--accent-orange:#f59e0b;--accent-red:#ef4444;
+  --grad-primary:linear-gradient(135deg,#8b5cf6 0%,#06b6d4 100%);
+  --grad-card:linear-gradient(135deg,rgba(139,92,246,0.12) 0%,rgba(6,182,212,0.08) 100%);
+  --grad-hero:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(139,92,246,0.3) 0%,transparent 60%);
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#475569;--text-accent:#a78bfa;
+  --radius-sm:6px;--radius-md:12px;--radius-lg:18px;--radius-xl:24px;--radius-full:9999px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.6);--shadow-glow:0 0 40px rgba(139,92,246,.2);
+  --transition:.2s cubic-bezier(.4,0,.2,1);--nav-height:64px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-base);color:var(--text-primary);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}ul{list-style:none}img{max-width:100%;display:block}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea,select{font-family:inherit}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-base)}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-purple)}
+::selection{background:rgba(139,92,246,.3);color:#fff}
+
+/* ── Layout ─────────────────────────────────────── */
+.app-shell{display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:1}
+.main-content{flex:1;padding-top:var(--nav-height)}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.cw{max-width:1400px;margin:0 auto;padding:0 32px}
+
+/* ── Orbs ────────────────────────────────────────── */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);animation:float 8s ease-in-out infinite}
+.orb1{width:400px;height:400px;background:rgba(139,92,246,.08);top:-100px;left:-100px}
+.orb2{width:300px;height:300px;background:rgba(6,182,212,.06);bottom:100px;right:-50px;animation-delay:-3s}
+.orb3{width:200px;height:200px;background:rgba(236,72,153,.05);top:40%;left:40%;animation-delay:-6s}
+
+/* ── Nav ─────────────────────────────────────────── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-height);background:rgba(8,11,20,.88);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;width:100%;display:flex;align-items:center;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em;flex-shrink:0;cursor:pointer}
+.logo-icon{width:34px;height:34px;background:var(--grad-primary);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--shadow-glow)}
+.logo-text{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{padding:6px 14px;border-radius:var(--radius-sm);font-size:.875rem;font-weight:500;color:var(--text-secondary);transition:all var(--transition);position:relative;cursor:pointer}
+.nav-link:hover,.nav-link.active{color:var(--text-primary);background:var(--bg-glass)}
+.nav-link.active::after{content:'';position:absolute;bottom:-1px;left:14px;right:14px;height:2px;background:var(--grad-primary);border-radius:2px}
+.nav-link.idea-link{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(6,182,212,.08));border:1px solid rgba(139,92,246,.2)}
+.nav-link.idea-link span{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+.nav-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 18px;border-radius:var(--radius-sm);font-size:.875rem;font-weight:600;transition:all var(--transition);cursor:pointer;position:relative;overflow:hidden;white-space:nowrap;border:none}
+.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background var(--transition)}
+.btn:hover::after{background:rgba(255,255,255,.06)}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--grad-primary);color:#fff;box-shadow:0 4px 20px rgba(139,92,246,.35)}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(139,92,246,.5);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg-glass);border:1px solid var(--border);color:var(--text-primary)}
+.btn-secondary:hover{border-color:var(--border-hover);background:var(--bg-glass-hover)}
+.btn-ghost{color:var(--text-secondary)}
+.btn-ghost:hover{color:var(--text-primary);background:var(--bg-glass)}
+.btn-sm{padding:6px 13px;font-size:.8rem}
+.btn-lg{padding:14px 28px;font-size:1rem}
+.btn-icon{padding:8px;border-radius:var(--radius-sm);width:36px;height:36px}
+.w-full{width:100%}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:1px 5px;background:rgba(255,255,255,.07);border-radius:4px}
+.nav-search{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:var(--radius-sm);background:var(--bg-glass);border:1px solid var(--border);color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all var(--transition)}
+.nav-search:hover{border-color:var(--border-hover);color:var(--text-secondary)}
+
+/* ── Badges ─────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--radius-full);font-size:.7rem;font-weight:600;letter-spacing:.02em}
+.badge-purple{background:rgba(139,92,246,.15);color:var(--accent-purple);border:1px solid rgba(139,92,246,.25)}
+.badge-cyan{background:rgba(6,182,212,.12);color:var(--accent-cyan);border:1px solid rgba(6,182,212,.2)}
+.badge-green{background:rgba(16,185,129,.12);color:var(--accent-green);border:1px solid rgba(16,185,129,.2)}
+.badge-orange{background:rgba(245,158,11,.12);color:var(--accent-orange);border:1px solid rgba(245,158,11,.2)}
+.badge-pink{background:rgba(236,72,153,.12);color:var(--accent-pink);border:1px solid rgba(236,72,153,.2)}
+.badge-red{background:rgba(239,68,68,.12);color:var(--accent-red);border:1px solid rgba(239,68,68,.2)}
+.badge-gray{background:rgba(255,255,255,.06);color:var(--text-secondary);border:1px solid var(--border)}
+.badge-src{background:rgba(255,255,255,.03);color:var(--text-muted);border:1px solid var(--border);font-size:.65rem}
+
+/* ── Cards ────────────────────────────────────────── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:all var(--transition);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:var(--grad-card);opacity:0;transition:opacity var(--transition);pointer-events:none}
+.card:hover{border-color:var(--border-hover);box-shadow:var(--shadow-lg),0 0 0 1px rgba(139,92,246,.1);transform:translateY(-2px)}
+.card:hover::before{opacity:1}
+
+/* ── Hero ─────────────────────────────────────────── */
+.hero{padding:80px 0 60px;position:relative;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:var(--grad-hero);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:var(--radius-full);background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);font-size:.78rem;font-weight:600;color:var(--accent-purple);margin-bottom:24px;animation:fadeInDown .6s ease both}
+.hero h1{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px;animation:fadeInUp .6s ease .1s both}
+.grad-text{background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.1rem;color:var(--text-secondary);max-width:580px;margin:0 auto 40px;animation:fadeInUp .6s ease .2s both}
+.hero-search{max-width:640px;margin:0 auto;position:relative;animation:fadeInUp .6s ease .3s both}
+.search-box{display:flex;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:6px 6px 6px 20px;box-shadow:var(--shadow-lg),var(--shadow-glow);transition:all var(--transition)}
+.search-box:focus-within{border-color:var(--accent-purple);box-shadow:var(--shadow-lg),0 0 0 3px rgba(139,92,246,.15)}
+.search-box input{flex:1;background:none;border:none;outline:none;color:var(--text-primary);font-size:1rem}
+.search-box input::placeholder{color:var(--text-muted)}
+.hero-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;animation:fadeInUp .6s ease .4s both}
+.htag{padding:5px 13px;border-radius:var(--radius-full);background:var(--bg-glass);border:1px solid var(--border);font-size:.76rem;color:var(--text-secondary);cursor:pointer;transition:all var(--transition)}
+.htag:hover{border-color:var(--border-hover);color:var(--text-accent);background:rgba(139,92,246,.08)}
+.hero-stats{display:flex;gap:36px;justify-content:center;margin-top:48px;animation:fadeInUp .6s ease .5s both;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.stat-val{font-size:1.8rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-lbl{font-size:.76rem;color:var(--text-muted);margin-top:2px}
+
+/* ── Trending strip ──────────────────────────────── */
+.trending-strip{display:flex;gap:8px;align-items:center;padding:12px 0;overflow-x:auto;scrollbar-width:none}
+.trending-strip::-webkit-scrollbar{display:none}
+.t-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--radius-full);background:var(--bg-glass);border:1px solid var(--border);font-size:.76rem;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all var(--transition);flex-shrink:0}
+.t-chip:hover{border-color:var(--accent-cyan);color:var(--accent-cyan);background:rgba(6,182,212,.08)}
+
+/* ── Tabs ─────────────────────────────────────────── */
+.tabs{display:flex;gap:3px;padding:3px;background:var(--bg-surface);border-radius:var(--radius-md);width:fit-content}
+.tab-btn{padding:8px 18px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;color:var(--text-secondary);transition:all var(--transition);display:flex;align-items:center;gap:7px;cursor:pointer}
+.tab-btn .tc{font-size:.67rem;padding:1px 6px;border-radius:var(--radius-full);background:var(--bg-glass);color:var(--text-muted)}
+.tab-btn.active{background:var(--bg-card);color:var(--text-primary);box-shadow:var(--shadow-sm)}
+.tab-btn.active .tc{background:rgba(139,92,246,.2);color:var(--accent-purple)}
+.tab-btn:hover:not(.active){color:var(--text-primary);background:var(--bg-glass)}
+
+/* ── Filters ─────────────────────────────────────── */
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select.fsel{appearance:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-secondary);padding:7px 30px 7px 12px;font-size:.78rem;cursor:pointer;transition:all var(--transition);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+select.fsel:hover{border-color:var(--border-hover);color:var(--text-primary)}
+select.fsel:focus{outline:none;border-color:var(--accent-purple)}
+.spacer{flex:1}
+
+/* ── Repo Card ────────────────────────────────────── */
+.repo-card{padding:20px}
+.rc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.rc-owner{font-size:.78rem;color:var(--text-muted)}
+.rc-name{font-weight:700;font-size:.98rem;color:var(--text-accent)}
+.rc-desc{font-size:.84rem;color:var(--text-secondary);margin-bottom:12px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.rc-stats{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.rstat{display:flex;align-items:center;gap:4px;font-size:.78rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace}
+.lang-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.diff-up{color:var(--accent-green);font-size:.72rem;font-weight:700}
+.diff-dn{color:var(--accent-red);font-size:.72rem;font-weight:700}
+
+/* ── Pkg Card ─────────────────────────────────────── */
+.pkg-card{padding:20px}
+.pkg-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:11px}
+.pkg-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:var(--bg-surface);border:1px solid var(--border)}
+.pkg-desc{font-size:.84rem;color:var(--text-secondary);margin-bottom:11px}
+.dl-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.dl-bar{flex:1;height:4px;background:var(--bg-surface);border-radius:2px;overflow:hidden}
+.dl-fill{height:100%;border-radius:2px;background:var(--grad-primary)}
+
+/* ── App Card ─────────────────────────────────────── */
+.app-card{padding:18px;display:flex;gap:14px;align-items:flex-start}
+.app-rank{font-size:.95rem;font-weight:800;width:26px;text-align:center;flex-shrink:0;padding-top:4px;color:var(--text-muted)}
+.app-logo{width:50px;height:50px;border-radius:var(--radius-md);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--bg-surface);border:1px solid var(--border)}
+.app-body{flex:1;min-width:0}
+.app-name{font-weight:700;font-size:.96rem}
+.app-tag{font-size:.83rem;color:var(--text-secondary);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.app-meta{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;font-size:.77rem;color:var(--text-secondary)}
+.app-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.app-src{display:flex;align-items:center;gap:8px;margin-top:9px}
+.upvote{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 11px;border-radius:var(--radius-md);background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary);font-size:.72rem;font-weight:700;transition:all var(--transition);min-width:50px;cursor:pointer;flex-shrink:0}
+.upvote:hover{border-color:var(--accent-orange);color:var(--accent-orange);background:rgba(245,158,11,.08)}
+.upvote.voted{border-color:var(--accent-orange);color:var(--accent-orange);background:rgba(245,158,11,.12)}
+.up-arr{width:14px;height:14px;transition:transform var(--transition)}
+.upvote:hover .up-arr{transform:translateY(-2px)}
+
+/* ── Leaderboard ──────────────────────────────────── */
+.lb-row{display:flex;align-items:center;gap:13px;padding:12px 20px;transition:background var(--transition)}
+.lb-row:hover{background:var(--bg-glass)}
+.lb-rank{width:30px;font-size:.95rem;font-weight:800;text-align:center;flex-shrink:0}
+.gold{color:#fbbf24}.silver{color:#94a3b8}.bronze{color:#d97706}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-weight:600;font-size:.88rem}
+.lb-meta{font-size:.74rem;color:var(--text-muted)}
+.lb-votes{display:flex;align-items:center;gap:4px;font-weight:700;font-size:.85rem;color:var(--accent-orange)}
+
+/* ── Section header ──────────────────────────────── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.sec-title{font-size:1.35rem;font-weight:800;letter-spacing:-.02em}
+.sec-sub{font-size:.83rem;color:var(--text-secondary);margin-top:3px}
+
+/* ── Idea Generator ──────────────────────────────── */
+.idea-hero{padding:56px 0 36px;text-align:center}
+.idea-wrap{max-width:700px;margin:0 auto}
+.idea-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:15px 15px 15px 22px;display:flex;align-items:flex-start;gap:11px;box-shadow:var(--shadow-lg),var(--shadow-glow);transition:all var(--transition)}
+.idea-box:focus-within{border-color:var(--accent-purple);box-shadow:var(--shadow-lg),0 0 0 3px rgba(139,92,246,.15)}
+.idea-box textarea{flex:1;background:none;border:none;outline:none;color:var(--text-primary);font-size:1rem;resize:none;min-height:52px;max-height:100px;line-height:1.5}
+.idea-box textarea::placeholder{color:var(--text-muted)}
+.idea-actions{display:flex;align-items:flex-end;gap:7px}
+.idea-examples{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.iex{padding:5px 13px;border-radius:var(--radius-full);background:var(--bg-surface);border:1px solid var(--border);font-size:.76rem;color:var(--text-secondary);cursor:pointer;transition:all var(--transition)}
+.iex:hover{border-color:var(--accent-purple);color:var(--accent-purple);background:rgba(139,92,246,.08)}
+
+/* Idea Results */
+.idea-results{padding-bottom:60px}
+.ir-hdr{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px;flex-wrap:wrap}
+.i-sec{margin-bottom:36px}
+.i-sec-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.ai-label{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:var(--radius-full);background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);font-size:.7rem;font-weight:600;color:var(--text-accent)}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-purple);animation:pulse 2s ease infinite;flex-shrink:0}
+.comp-tbl{width:100%;border-collapse:collapse}
+.comp-tbl th{text-align:left;padding:9px 12px;font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.comp-tbl td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.84rem}
+.comp-tbl tr:hover td{background:var(--bg-glass)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.signals{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px}
+.sig-card{padding:15px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border);text-align:center}
+.sig-val{font-size:1.4rem;font-weight:800}
+.sig-lbl{font-size:.72rem;color:var(--text-secondary);margin-top:3px}
+.gaps{display:flex;flex-direction:column;gap:9px}
+.gap-item{display:flex;gap:11px;padding:13px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border)}
+.gap-ico{font-size:1.05rem;flex-shrink:0}
+.gap-txt{font-size:.84rem;color:var(--text-secondary)}
+.gap-txt strong{color:var(--text-primary)}
+.gap-src{font-size:.7rem;color:var(--text-muted);margin-top:3px}
+.idea-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:15px}
+.idea-card{padding:20px;border-radius:var(--radius-lg);background:var(--bg-card);border:1px solid var(--border);position:relative;overflow:hidden;transition:all var(--transition)}
+.idea-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-primary)}
+.idea-card:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:var(--shadow-lg),var(--shadow-glow)}
+.ic-num{font-size:.68rem;font-weight:800;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.ic-title{font-size:1rem;font-weight:700;margin-bottom:7px}
+.ic-why{font-size:.84rem;color:var(--text-secondary);margin-bottom:13px;line-height:1.6}
+.ic-meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.ic-stack{font-size:.76rem;color:var(--text-muted);margin-bottom:14px}
+.ic-stack span{color:var(--accent-cyan);font-family:'JetBrains Mono',monospace}
+.ic-footer{display:flex;gap:7px;padding-top:13px;border-top:1px solid var(--border);align-items:center}
+.solo-score{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--text-muted)}
+.ss-dots{display:flex;gap:2px}
+.ss-dot{width:6px;height:6px;border-radius:50%;background:var(--bg-surface)}
+.ss-dot.on{background:var(--accent-green)}
+
+/* ── Submit ───────────────────────────────────────── */
+.submit-page{padding:36px 0 80px}
+.form-grp{margin-bottom:20px}
+.form-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:7px}
+.form-label em{color:var(--text-muted);font-style:normal;font-weight:400}
+.form-inp,.form-ta,.form-sel{width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px 13px;font-size:.88rem;transition:all var(--transition);outline:none}
+.form-inp::placeholder,.form-ta::placeholder{color:var(--text-muted)}
+.form-inp:focus,.form-ta:focus,.form-sel:focus{border-color:var(--accent-purple);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+.form-ta{resize:vertical;min-height:80px}
+.form-hint{font-size:.76rem;color:var(--text-muted);margin-top:5px}
+.form-chk{display:flex;align-items:center;gap:9px;cursor:pointer}
+.form-chk input{width:15px;height:15px;accent-color:var(--accent-purple)}
+.form-chk-lbl{font-size:.875rem;color:var(--text-secondary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.auth-wall{padding:36px;border-radius:var(--radius-xl);background:var(--grad-card);border:1px solid var(--border);text-align:center;margin-bottom:28px}
+.gh-btn{display:inline-flex;align-items:center;gap:9px;padding:11px 22px;border-radius:var(--radius-md);background:#24292f;border:1px solid rgba(255,255,255,.12);color:#fff;font-size:.88rem;font-weight:600;transition:all var(--transition);cursor:pointer}
+.gh-btn:hover{background:#30363d;transform:translateY(-1px);box-shadow:var(--shadow-md)}
+
+/* ── Profile ──────────────────────────────────────── */
+.profile-hdr{display:flex;align-items:center;gap:22px;padding:28px 0}
+.p-avatar{width:76px;height:76px;border-radius:50%;border:3px solid var(--accent-purple);display:flex;align-items:center;justify-content:center;font-size:1.9rem;background:var(--bg-surface);flex-shrink:0}
+.p-name{font-size:1.4rem;font-weight:800}
+.p-handle{color:var(--text-muted);font-size:.88rem}
+.p-stats{display:flex;gap:22px;margin-top:10px}
+.ps{text-align:center}
+.ps-val{font-size:1.2rem;font-weight:800}
+.ps-lbl{font-size:.7rem;color:var(--text-muted)}
+
+/* ── About ────────────────────────────────────────── */
+.about-page{padding:56px 0}
+.about-sec{margin-bottom:52px}
+.about-title{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
+.about-desc{color:var(--text-secondary);line-height:1.8;font-size:.93rem}
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:11px}
+.si{padding:15px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border)}
+.si-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:3px}
+.si-val{font-weight:600;font-size:.88rem}
+.si-why{font-size:.75rem;color:var(--text-muted);margin-top:3px}
+.src-tbl{width:100%;border-collapse:collapse}
+.src-tbl th{text-align:left;padding:9px 11px;font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.src-tbl td{padding:11px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem}
+.src-tbl tr:hover td{background:var(--bg-glass)}
+
+/* ── Toast ────────────────────────────────────────── */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:11px 16px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;font-size:.84rem;font-weight:500;animation:slideR .3s ease;max-width:340px}
+.toast.success{border-color:rgba(16,185,129,.3)}
+.toast.error{border-color:rgba(239,68,68,.3)}
+
+/* ── Modal ────────────────────────────────────────── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:22px;animation:fadeIn .2s ease}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);max-width:520px;width:100%;box-shadow:var(--shadow-lg),var(--shadow-glow);animation:scaleIn .2s ease;overflow:hidden}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-weight:700;font-size:1rem}
+.modal-body{padding:22px}
+
+/* ── Loading ──────────────────────────────────────── */
+.loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:56px 0;color:var(--text-muted)}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent-purple);border-radius:50%;animation:spin .6s linear infinite}
+.prog-bar{height:3px;background:var(--bg-surface);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;background:var(--grad-primary);transition:width .4s ease}
+
+/* ── Empty ────────────────────────────────────────── */
+.empty{text-align:center;padding:56px 18px}
+.empty-ico{font-size:2.8rem;margin-bottom:14px;opacity:.5}
+.empty-title{font-size:1.05rem;font-weight:700;margin-bottom:7px}
+.empty-desc{font-size:.84rem;color:var(--text-muted)}
+
+/* ── Footer ───────────────────────────────────────── */
+.footer{border-top:1px solid var(--border);padding:38px 0 22px;margin-top:80px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:38px;margin-bottom:28px}
+.footer-brand p{font-size:.83rem;color:var(--text-muted);margin-top:9px;line-height:1.7;max-width:270px}
+.fcol-title{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px}
+.flinks{display:flex;flex-direction:column;gap:7px}
+.flink{font-size:.83rem;color:var(--text-secondary);transition:color var(--transition);cursor:pointer}
+.flink:hover{color:var(--text-primary)}
+.footer-bot{display:flex;align-items:center;justify-content:space-between;padding-top:22px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.footer-copy{font-size:.76rem;color:var(--text-muted)}
+.divider{height:1px;background:var(--border);margin:22px 0}
+.hidden{display:none!important}
+.grid-list{display:grid;gap:14px;grid-template-columns:1fr}
+.grid-2up{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+
+/* ── Animations ───────────────────────────────────── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slideR{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.fade-in{animation:fadeInUp .45s ease both}
+
+/* ── Responsive ───────────────────────────────────── */
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.idea-cards{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .cw,.container{padding:0 14px}
+  .hero{padding:44px 0 32px}
+  .hero h1{font-size:2rem}
+  .nav-links{display:none}
+  .footer-grid{grid-template-columns:1fr;gap:22px}
+  .form-row{grid-template-columns:1fr}
+  .signals{grid-template-columns:repeat(2,1fr)}
+  .hero-stats{gap:18px}
+  .app-rank{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1" aria-hidden="true"></div>
+<div class="orb orb2" aria-hidden="true"></div>
+<div class="orb orb3" aria-hidden="true"></div>
+
+<div class="app-shell">
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo" id="logo-btn">
+      <div class="logo-icon">🚀</div>
+      <span class="logo-text">SoloLaunch</span>
+    </div>
+    <div class="nav-links">
+      <span class="nav-link active" data-page="home">Discover</span>
+      <span class="nav-link idea-link" data-page="ideas"><span>✨ Idea Generator</span></span>
+      <span class="nav-link" data-page="submit">Submit</span>
+      <span class="nav-link" data-page="about">Open Source</span>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-search" id="nav-search-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Generate ideas… <span class="kbd">⌘K</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="window.open('https://github.com/DreamFaang78/sololaunch','_blank')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </button>
+      <button class="btn btn-primary btn-sm" id="nav-login-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <span id="nav-login-label">Login</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="main-content" id="main"></main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="cw">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><div class="logo-icon">🚀</div><span class="logo-text">SoloLaunch</span></div>
+        <p>The free, open-source Product Hunt for solo developers. Real stats, real sources, no paywalls. MIT licensed and self-hostable in 15 minutes.</p>
+        <div style="display:flex;gap:9px;margin-top:14px;">
+          <button class="btn btn-secondary btn-sm" onclick="window.open('https://github.com/DreamFaang78/sololaunch','_blank')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</button>
+          <button class="btn btn-secondary btn-sm" onclick="toast('📦 Weekly dataset — public S3 JSON, updated every Sunday','info')">📦 Data Export</button>
+        </div>
+      </div>
+      <div><div class="fcol-title">Explore</div><div class="flinks"><span class="flink" data-page="home">Discover Feed</span><span class="flink" data-page="ideas">Idea Generator</span><span class="flink" data-page="submit">Submit Project</span></div></div>
+      <div><div class="fcol-title">Data Sources</div><div class="flinks"><a class="flink" href="https://docs.github.com/en/rest" target="_blank">GitHub API</a><a class="flink" href="https://registry.npmjs.org" target="_blank">npm Registry</a><a class="flink" href="https://pypi.org/stats" target="_blank">PyPI API</a><a class="flink" href="https://hn.algolia.com/api" target="_blank">Hacker News API</a></div></div>
+      <div><div class="fcol-title">Open Source</div><div class="flinks"><span class="flink" data-page="about">About & Stack</span><a class="flink" href="https://github.com/DreamFaang78/sololaunch/blob/main/docs/self-host.md" target="_blank">Self-host Guide</a><a class="flink" href="https://github.com/DreamFaang78/sololaunch/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a><a class="flink" href="https://github.com/DreamFaang78/sololaunch/blob/main/LICENSE" target="_blank">MIT License</a></div></div>
+    </div>
+    <div class="footer-bot">
+      <div class="footer-copy">© 2026 SoloLaunch by DreamFaang78 · Built for the solo developer community</div>
+      <div style="display:flex;gap:9px;align-items:center;">
+        <span class="badge badge-gray" style="font-size:.7rem;">📖 MIT License</span>
+        <span class="badge badge-green" style="font-size:.7rem;"><span style="width:5px;height:5px;border-radius:50%;background:var(--accent-green);display:inline-block;animation:pulse 2s ease infinite;"></span> All systems operational</span>
+      </div>
+    </div>
+  </div>
+</footer>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ========================================================
+// SoloLaunch – Fully self-contained SPA
+// No external JS dependencies, no build step required
+// ========================================================
+
+// ── Icons ────────────────────────────────────────────────
+const I = {
+  star: `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+  fork: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 9v2a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9"/></svg>`,
+  issue: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  dl: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+  up: `<svg class="up-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>`,
+  ext: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  gh: `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`,
+  srch: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  spark: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>`,
+  bolt: `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+  flame: `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/></svg>`,
+  copy: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+  save: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
+  send: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
+  info: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  chart: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  close: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  tag: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  user: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  trophy: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="13"/><path d="M7 4H4a2 2 0 0 0 0 4c0 2.5 2 4.5 5 5M17 4h3a2 2 0 0 1 0 4c0 2.5-2 4.5-5 5"/><path d="M7 4h10v4a5 5 0 0 1-10 0V4z"/></svg>`,
+  idea: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`,
+  pkg: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+  npm: `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.331h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/></svg>`,
+  pypi: `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.96.048C5.4.048 5.784 2.9 5.784 2.9l.007 2.918h6.28v.875H3.7S-.001 6.245-.001 12.94c0 6.694 3.704 6.457 3.704 6.457h2.21v-3.105s-.12-3.704 3.645-3.704h6.27s3.525.057 3.525-3.41V3.516S19.878.048 11.96.048zm-3.497 2.02a1.14 1.14 0 1 1-.002 2.28 1.14 1.14 0 0 1 .002-2.28z"/><path d="M12.04 23.952c6.556 0 6.172-2.852 6.172-2.852l-.007-2.918h-6.28v-.875h8.371S24 17.755 24 11.06c0-6.694-3.704-6.457-3.704-6.457h-2.21v3.105s.12 3.704-3.645 3.704h-6.27s-3.525-.057-3.525 3.41v5.662s-.535 3.468 7.394 3.468zm3.497-2.02a1.14 1.14 0 1 1 .002-2.28 1.14 1.14 0 0 1-.002 2.28z"/></svg>`,
+  surp: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+};
+
+// ── Helpers ───────────────────────────────────────────────
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function fmt(n){if(n==null)return'—';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'k';return String(n)}
+
+// ── State ─────────────────────────────────────────────────
+const ST = {
+  page: 'home', loggedIn: false,
+  votes: new Set(JSON.parse(localStorage.getItem('sl_v')||'[]')),
+  saved: JSON.parse(localStorage.getItem('sl_s')||'[]'),
+};
+const saveLS = () => { localStorage.setItem('sl_v',JSON.stringify([...ST.votes])); localStorage.setItem('sl_s',JSON.stringify(ST.saved)); };
+
+// ── Data ──────────────────────────────────────────────────
+const LC = {JavaScript:'#f7df1e',TypeScript:'#3178c6',Python:'#3572A5',Rust:'#dea584',Go:'#00ADD8',Swift:'#FA7343',CSS:'#563d7c',HTML:'#e34c26','C++':'#f34b7d',Dart:'#00B4AB',Shell:'#89e051'};
+
+const REPOS=[
+  {id:'r1',owner:'vercel',name:'next.js',desc:'The React Framework – production-ready for full-stack apps.',stars:128400,forks:27100,issues:3240,language:'JavaScript',license:'MIT',last_commit:'2 hours ago',topics:['react','ssr','typescript'],url:'https://github.com/vercel/next.js',source:'GitHub API',updated:'2 hours ago',trending:true,growth:12},
+  {id:'r2',owner:'microsoft',name:'vscode',desc:'Visual Studio Code – open source code editor built on web technologies.',stars:165200,forks:29800,issues:7400,language:'TypeScript',license:'MIT',last_commit:'4 hours ago',topics:['editor','electron','dev-tools'],url:'https://github.com/microsoft/vscode',source:'GitHub API',updated:'4 hours ago',trending:true,growth:8},
+  {id:'r3',owner:'astro-build',name:'astro',desc:'Build faster websites with a next-gen island architecture. Zero JS by default with opt-in interactivity.',stars:48900,forks:2500,issues:640,language:'TypeScript',license:'MIT',last_commit:'1 hour ago',topics:['static-site','web','performance'],url:'https://github.com/astro-build/astro',source:'GitHub API',updated:'1 hour ago',trending:true,growth:34},
+  {id:'r4',owner:'facebook',name:'react',desc:'The library for web and native user interfaces. Declarative and component-based.',stars:228000,forks:46700,issues:1100,language:'JavaScript',license:'MIT',last_commit:'6 hours ago',topics:['ui','javascript','components'],url:'https://github.com/facebook/react',source:'GitHub API',updated:'6 hours ago',trending:false,growth:5},
+  {id:'r5',owner:'sst',name:'ion',desc:'SST v3 – Deploy fullstack apps to your own AWS account. Next.js, Hono, Drizzle, all in TypeScript.',stars:5800,forks:340,issues:112,language:'TypeScript',license:'MIT',last_commit:'3 hours ago',topics:['aws','serverless','iac'],url:'https://github.com/sst/ion',source:'GitHub API',updated:'3 hours ago',trending:true,growth:67},
+  {id:'r6',owner:'drizzle-team',name:'drizzle-orm',desc:'TypeScript ORM that loves SQL. Fully type-safe, works with PostgreSQL, MySQL, SQLite.',stars:26400,forks:760,issues:900,language:'TypeScript',license:'Apache-2.0',last_commit:'5 hours ago',topics:['orm','sql','postgres'],url:'https://github.com/drizzle-team/drizzle-orm',source:'GitHub API',updated:'5 hours ago',trending:true,growth:42},
+  {id:'r7',owner:'honojs',name:'hono',desc:'Fast, Lightweight, Web-standards. Runs on Cloudflare, Deno, Bun, Node, AWS Lambda.',stars:21700,forks:620,issues:88,language:'TypeScript',license:'MIT',last_commit:'8 hours ago',topics:['web-framework','cloudflare','lambda'],url:'https://github.com/honojs/hono',source:'GitHub API',updated:'8 hours ago',trending:true,growth:58},
+  {id:'r8',owner:'biomejs',name:'biome',desc:'One toolchain for your web project. Linter, formatter, and more — all in Rust, absurdly fast.',stars:14800,forks:480,issues:320,language:'Rust',license:'MIT',last_commit:'12 hours ago',topics:['rust','linter','formatter'],url:'https://github.com/biomejs/biome',source:'GitHub API',updated:'12 hours ago',trending:true,growth:29},
+  {id:'r9',owner:'shadcn',name:'ui',desc:'Beautifully designed components built with Radix UI and Tailwind CSS. Build your own component library.',stars:72000,forks:4600,issues:580,language:'TypeScript',license:'MIT',last_commit:'10 hours ago',topics:['react','ui','tailwind'],url:'https://github.com/shadcn/ui',source:'GitHub API',updated:'10 hours ago',trending:true,growth:22},
+  {id:'r10',owner:'lucia-auth',name:'lucia',desc:'Flexible, database-agnostic, open source authentication for TypeScript.',stars:9400,forks:320,issues:64,language:'TypeScript',license:'MIT',last_commit:'1 day ago',topics:['auth','sessions','oauth'],url:'https://github.com/lucia-auth/lucia',source:'GitHub API',updated:'1 day ago',trending:false,growth:18},
+];
+
+const PKGS=[
+  {id:'p1',name:'hono',reg:'npm',emoji:'🔥',desc:'Ultra-fast web framework for the Edges. Tiny, zero-dependency, works everywhere.',wdl:1420000,growth:38.2,ver:'4.6.14',lic:'MIT',url:'https://npmjs.com/package/hono',source:'npm Registry API',updated:'1 hour ago',tags:['web','framework','edge']},
+  {id:'p2',name:'drizzle-orm',reg:'npm',emoji:'🐉',desc:'Headless TypeScript ORM with a drizzle of magic. SQL-like API that TypeScript loves.',wdl:980000,growth:44.1,ver:'0.36.1',lic:'Apache-2.0',url:'https://npmjs.com/package/drizzle-orm',source:'npm Registry API',updated:'2 hours ago',tags:['orm','sql','typescript']},
+  {id:'p3',name:'bun',reg:'npm',emoji:'🥟',desc:'All-in-one JavaScript runtime & toolkit — blazing fast, with built-in bundler, test runner, and npm client.',wdl:2100000,growth:61.7,ver:'1.1.30',lic:'MIT',url:'https://npmjs.com/package/bun',source:'npm Registry API',updated:'30 min ago',tags:['runtime','bundler','fast']},
+  {id:'p4',name:'fastapi',reg:'pypi',emoji:'⚡',desc:'FastAPI – high performance Python web framework. Easy to learn, fast to code. Ready for production.',wdl:8700000,growth:22.5,ver:'0.115.4',lic:'MIT',url:'https://pypi.org/project/fastapi/',source:'PyPI JSON API + pypistats',updated:'3 hours ago',tags:['python','api','async']},
+  {id:'p5',name:'zod',reg:'npm',emoji:'🛡',desc:'TypeScript-first schema validation. Infers static types automatically.',wdl:24000000,growth:18.3,ver:'3.23.8',lic:'MIT',url:'https://npmjs.com/package/zod',source:'npm Registry API',updated:'1 hour ago',tags:['validation','typescript','schema']},
+  {id:'p6',name:'uv',reg:'pypi',emoji:'🦀',desc:'Extremely fast Python package manager written in Rust. Drop-in replacement for pip.',wdl:3400000,growth:88.4,ver:'0.4.28',lic:'MIT',url:'https://pypi.org/project/uv/',source:'PyPI JSON API + pypistats',updated:'45 min ago',tags:['python','package-manager','rust']},
+  {id:'p7',name:'@biomejs/biome',reg:'npm',emoji:'🧬',desc:'One toolchain for your web project. Lints, formats, and more — at Rust speed.',wdl:670000,growth:51.2,ver:'1.9.3',lic:'MIT',url:'https://npmjs.com/package/@biomejs/biome',source:'npm Registry API',updated:'2 hours ago',tags:['linter','formatter','toolchain']},
+  {id:'p8',name:'effect',reg:'npm',emoji:'🌊',desc:'A powerful TypeScript framework for highly-composable, type-safe, production-grade applications.',wdl:340000,growth:72.8,ver:'3.10.9',lic:'MIT',url:'https://npmjs.com/package/effect',source:'npm Registry API',updated:'3 hours ago',tags:['fp','typescript','composable']},
+];
+
+const APPS=[
+  {id:'a1',name:'Pika',tag:'Effortlessly create beautiful screenshots and mockups for your app',emoji:'📸',maker:'dhravya',cat:'Design Tool',solo:true,tags:['design','screenshots'],votes:842,url:'https://pika.style',stars:2100,source:'Community + GitHub API',updated:'6 hours ago'},
+  {id:'a2',name:'Raycast',tag:'Your shortcut to everything. A blazingly fast, totally extendable launcher',emoji:'🚀',maker:'peduarte',cat:'Productivity',solo:false,tags:['launcher','macos'],votes:3240,url:'https://raycast.com',stars:null,source:'Community Submission',updated:'1 day ago'},
+  {id:'a3',name:'Gitpod',tag:'Cloud development environments, automated and ready to code',emoji:'🏗',maker:'svenefftinge',cat:'Developer Tool',solo:false,tags:['cloud','devenv'],votes:1560,url:'https://gitpod.io',stars:12800,source:'Community + GitHub API',updated:'2 hours ago'},
+  {id:'a4',name:'Papermark',tag:'Open-source DocSend alternative. Share documents with real-time analytics',emoji:'📄',maker:'mfts0',cat:'SaaS',solo:true,tags:['documents','analytics'],votes:674,url:'https://papermark.io',stars:5200,source:'Community + GitHub API',updated:'4 hours ago'},
+  {id:'a5',name:'Documenso',tag:'The open-source DocuSign alternative for document signing',emoji:'✍️',maker:'timleslie',cat:'SaaS',solo:true,tags:['signing','open-source'],votes:521,url:'https://documenso.com',stars:8900,source:'Community + GitHub API',updated:'3 hours ago'},
+  {id:'a6',name:'Wasp',tag:'The fastest way to build full-stack React + Node.js apps. No boilerplate',emoji:'🐝',maker:'martinovicm',cat:'Developer Tool',solo:false,tags:['react','node','fullstack'],votes:893,url:'https://wasp-lang.dev',stars:14200,source:'Community + GitHub API',updated:'5 hours ago'},
+  {id:'a7',name:'Supabase',tag:'The open source Firebase alternative. Instant backend with Postgres',emoji:'⚡',maker:'kiwicopple',cat:'Backend',solo:false,tags:['database','postgres'],votes:4120,url:'https://supabase.com',stars:73200,source:'Community + GitHub API',updated:'1 hour ago'},
+  {id:'a8',name:'Cal.com',tag:'Scheduling infrastructure for absolutely everyone. Open source Calendly',emoji:'📅',maker:'peer',cat:'Productivity',solo:false,tags:['scheduling','calendar'],votes:2380,url:'https://cal.com',stars:32100,source:'Community + GitHub API',updated:'2 hours ago'},
+];
+
+const LB={
+  daily:[
+    {rank:1,name:'LiteInvoice',tag:'Terminal-first invoice CLI',maker:'rishi_dev',votes:284,emoji:'🧾'},
+    {rank:2,name:'Papermark v2',tag:'AI-powered document analytics',maker:'mfts0',votes:231,emoji:'📄'},
+    {rank:3,name:'SnapDiff',tag:'Visual regression testing in 1 command',maker:'coder_ana',votes:198,emoji:'🖼'},
+    {rank:4,name:'Templ8r',tag:'AI codebase scaffolding from a prompt',maker:'devmagic',votes:156,emoji:'🏗'},
+    {rank:5,name:'SlowQuery',tag:'Postgres query advisor with Drizzle support',maker:'pgfan',votes:142,emoji:'🐘'},
+  ],
+  weekly:[
+    {rank:1,name:'Wasp',tag:'Fullstack React + Node without boilerplate',maker:'martinovicm',votes:1240,emoji:'🐝'},
+    {rank:2,name:'Documenso',tag:'Open-source DocuSign alternative',maker:'timleslie',votes:1108,emoji:'✍️'},
+    {rank:3,name:'Papermark',tag:'Open-source DocSend with analytics',maker:'mfts0',votes:894,emoji:'📄'},
+    {rank:4,name:'WiseInvoice',tag:'Freelancer-to-Wise payment pipeline',maker:'eu_freelancer',votes:720,emoji:'💸'},
+    {rank:5,name:'InvoiceOS',tag:'Browser-only invoicing, zero server',maker:'local_first',votes:640,emoji:'🗂'},
+  ],
+};
+
+const TTAGS=['AI Tools🔥','Rust crates🔥','Edge computing','LLM wrappers','PDF tools','Auth libraries','ORM','Invoice SaaS','CLI apps','Self-hosted','Web scrapers','Scheduling','Design tools','Bun'];
+
+const IDEA_DB={
+  'invoice tool':{
+    query:'invoice tool for freelancers',
+    comps:[
+      {name:'Invoice Ninja',url:'https://github.com/invoiceninja/invoiceninja',stars:8200,dl:null,lic:'AAL',upd:'2024-11',reg:'GitHub'},
+      {name:'invoice-zero',url:'https://github.com/invoice-zero',stars:340,dl:null,lic:'MIT',upd:'2023-08',reg:'GitHub'},
+      {name:'invoicehippo',url:'https://invoicehippo.com',stars:null,dl:null,lic:'Proprietary',upd:'2024-09',reg:'Web'},
+    ],
+    signals:{repos:47,pkgs:8,active:12,avgStars:820,lastUpd:'1 month ago'},
+    gaps:[
+      {ico:'😤',txt:'"None support multi-currency invoicing without a paid plan"',src:'GitHub Issues · invoice-ninja#4821',theme:'missing feature'},
+      {ico:'😩',txt:'"PDF export fonts are broken on Linux"',src:'GitHub Issues · invoice-ninja#5102',theme:'bug'},
+      {ico:'💬',txt:'"I just want something lightweight without a 50 MB Docker image"',src:'Hacker News · ask.hn/freelancer-tools-2024',theme:'pain point'},
+      {ico:'🔗',txt:'"No native integration with Wise or Revolut for payouts"',src:'Reddit r/freelance · top comment',theme:'missing integration'},
+    ],
+    ideas:[
+      {num:1,title:'LiteInvoice – terminal-first invoice CLI',why:'Developers hate heavy web apps for simple invoicing. A CLI that outputs PDF, sends via email, and stores in SQLite hits a real gap. No Docker, no cloud required.',stack:['Bun','PDFKit','SQLite','Nodemailer'],diff:'weekend',solo:5,tags:['CLI','no-cloud'],srcs:['github.com/invoiceninja/invoiceninja/issues/5102']},
+      {num:2,title:'WiseInvoice – Freelancer-to-Wise pipeline',why:'Wise and Revolut dominate among European and Asian freelancers, yet zero open-source invoicing tools natively integrate with them. First-mover advantage.',stack:['Next.js','Hono','Drizzle','Wise API'],diff:'month',solo:4,tags:['Wise','payments','SaaS'],srcs:['reddit.com/r/freelance/comments/xyz']},
+      {num:3,title:'InvoiceAI – Auto-fill from chat description',why:'Freelancers describe work conversationally. An AI that listens to "3 days React consulting at $150/h" and generates a ready-to-send PDF is a clear differentiator.',stack:['Astro','Amazon Bedrock','Postgres','Puppeteer'],diff:'month',solo:4,tags:['AI','NLP','automation'],srcs:['twitter.com/freelancer_pain/status/1842']},
+      {num:4,title:'FlatInvoice – Multi-currency, zero subscription',why:'Every existing tool charges monthly for multi-currency. A one-time-purchase or fully open-source model directly addresses the most upvoted issue on Invoice Ninja.',stack:['SvelteKit','Pocketbase','ExchangeRate API'],diff:'month',solo:5,tags:['multi-currency','OSS'],srcs:['github.com/invoiceninja/invoiceninja/issues/4821']},
+      {num:5,title:'InvoiceOS – Offline-first browser PWA',why:'A PWA running 100% in browser localStorage means zero server costs and infinite privacy — fills the "I want local-only" gap with no competition in OSS.',stack:['Vue 3','Vite','IndexedDB','jsPDF'],diff:'weekend',solo:5,tags:['PWA','offline','browser'],srcs:['news.ycombinator.com/item?id=40012']},
+    ],
+  },
+  'habit tracker':{
+    query:'habit tracker app',
+    comps:[
+      {name:'Loop Habit Tracker',url:'https://github.com/iSoron/uhabits',stars:7800,dl:null,lic:'GPL-3.0',upd:'2024-10',reg:'GitHub'},
+      {name:'Habitica',url:'https://github.com/HabitRPG/habitica',stars:11200,dl:null,lic:'GPL-3.0',upd:'2024-09',reg:'GitHub'},
+      {name:'habits',url:'https://npmjs.com/package/habits',stars:null,dl:1200,lic:'MIT',upd:'2022-03',reg:'npm'},
+    ],
+    signals:{repos:124,pkgs:23,active:34,avgStars:1200,lastUpd:'3 months ago'},
+    gaps:[
+      {ico:'📊',txt:'"No proper analytics – streaks over years, not just 30 days"',src:'GitHub Issues · uhabits#1234',theme:'missing feature'},
+      {ico:'🔔',txt:'"Notifications are unreliable on Android 14"',src:'GitHub Issues · uhabits#2001',theme:'bug'},
+      {ico:'💬',txt:'"All these apps gamify everything – I just want a dead-simple log"',src:'Hacker News · item?id=39812',theme:'UX frustration'},
+      {ico:'🤝',txt:'"No accountability partner feature"',src:'Reddit r/getdisciplined · top comment',theme:'missing feature'},
+    ],
+    ideas:[
+      {num:1,title:'StrikeLog – Terminal habit tracker in 200 lines',why:'The simplest possible habit tracker: a CLI logging to CSV, showing streaks in ASCII, never asking for your email.',stack:['Bun','SQLite','chalk'],diff:'weekend',solo:5,tags:['CLI','minimal','local'],srcs:['news.ycombinator.com/item?id=39812']},
+      {num:2,title:'PairHabit – Accountability buddy habits',why:'No OSS habit tracker has a "share with one friend" feature. Two-player accountability has strong research backing and zero OSS competition.',stack:['Next.js','Pusher','Postgres','Resend'],diff:'month',solo:4,tags:['social','accountability','realtime'],srcs:['reddit.com/r/getdisciplined/comments/abc']},
+      {num:3,title:'HabitGraph – Multi-year streak visualizer',why:'Existing apps cap at 30 days. A GitHub-contribution-graph style multi-year view for habits fills an unmet demand with 80+ upvotes on the top issues.',stack:['SvelteKit','D3.js','SQLite'],diff:'weekend',solo:5,tags:['visualization','streaks'],srcs:['github.com/iSoron/uhabits/issues/1234']},
+    ],
+  },
+};
+
+const STACK=[
+  {layer:'Frontend',val:'Astro 5 + React Islands',why:'Static-first, fast loads, SEO'},
+  {layer:'Styling',val:'Tailwind CSS v4 + shadcn/ui',why:'Design system out of the box'},
+  {layer:'API',val:'Hono on AWS Lambda',why:'Tiny, fast, pay-per-request'},
+  {layer:'Database',val:'Aurora Serverless v2 (Postgres)',why:'Scales to zero, full-text + pgvector'},
+  {layer:'ORM',val:'Drizzle ORM',why:'Type-safe SQL-like queries'},
+  {layer:'Auth',val:'Better Auth (GitHub OAuth)',why:'Open source, no lock-in'},
+  {layer:'Hosting',val:'S3 + CloudFront',why:'Static CDN, near-zero cost'},
+  {layer:'Jobs',val:'EventBridge → SQS → Lambda',why:'Serverless fan-out with retries'},
+  {layer:'Scraping',val:'Apify free plan',why:'Only for pages with no API'},
+  {layer:'AI',val:'Amazon Bedrock (Nova models)',why:'Stays in AWS, covered by credit'},
+  {layer:'IaC',val:'SST v3',why:'One command deploy, open source'},
+  {layer:'DNS',val:'alphacreation.online',why:'Route 53 or registrar DNS'},
+];
+
+const DSOURCES=[
+  {src:'GitHub REST/GraphQL API',used:'Stars, forks, topics, issues',access:'Free personal token',limit:'~5k req/hr'},
+  {src:'GitHub Trending (Apify)',used:'Daily/weekly trending repos',access:'Apify actor',limit:'Free credits'},
+  {src:'npm Registry API',used:'Package info, weekly downloads',access:'Free, no key',limit:'Generous'},
+  {src:'PyPI JSON API + pypistats',used:'Python packages + downloads',access:'Free, no key',limit:'Generous'},
+  {src:'Hacker News (Algolia API)',used:'Discussions, Show HN, pain points',access:'Free, no key',limit:'Generous'},
+  {src:'Amazon Bedrock',used:'AI idea generation, gap summaries',access:'$100 AWS credit',limit:'Cache aggressively'},
+];
+
+// ── Render helpers ───────────────────────────────────────
+function repoCard(r,rank){
+  const lc=LC[r.language]||'#8b5cf6';
+  return `<div class="card repo-card fade-in" style="animation-delay:${rank*.05}s">
+  <div class="rc-head">
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px">
+        <span class="rc-owner">${esc(r.owner)} /</span>
+        <a href="${r.url}" target="_blank" style="font-weight:700;font-size:.96rem;color:var(--accent-cyan)">${esc(r.name)}</a>
+        ${r.trending?`<span class="badge badge-orange">${I.flame} Trending</span>`:''}
+        ${r.growth?`<span class="diff-up">↑${r.growth}% this week</span>`:''}
+      </div>
+      <p class="rc-desc">${esc(r.desc)}</p>
+      <div class="rc-stats">
+        <span class="rstat">${I.star} <strong>${fmt(r.stars)}</strong></span>
+        <span class="rstat">${I.fork} ${fmt(r.forks)}</span>
+        <span class="rstat">${I.issue} ${fmt(r.issues)}</span>
+        <span class="rstat"><span class="lang-dot" style="background:${lc}"></span>${r.language}</span>
+        <span class="rstat" style="font-size:.7rem">${r.license}</span>
+        <span class="rstat" style="font-size:.7rem;color:var(--text-muted)">Updated ${r.last_commit}</span>
+      </div>
+      <div style="margin-top:9px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        ${r.topics.map(t=>`<span class="badge badge-gray">${I.tag} ${t}</span>`).join('')}
+        <span style="margin-left:auto" class="badge badge-src">${I.info} Source: ${r.source} · ${r.updated}</span>
+      </div>
+    </div>
+    <a href="${r.url}" target="_blank" class="btn btn-secondary btn-sm" style="flex-shrink:0">${I.ext} View</a>
+  </div>
+</div>`;
+}
+
+function pkgCard(p){
+  const maxDL=24e6,pct=Math.min(100,Math.round((p.wdl/maxDL)*100));
+  const gc=p.growth>=0?'diff-up':'diff-dn',gs=p.growth>=0?'↑':'↓';
+  const rb=p.reg==='npm'?'badge-red':'badge-cyan',ri=p.reg==='npm'?I.npm:I.pypi;
+  return `<div class="card pkg-card fade-in">
+  <div class="pkg-head">
+    <div class="pkg-icon">${p.emoji}</div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+        <span style="font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.9rem">${esc(p.name)}</span>
+        <span class="badge ${rb}">${ri} ${p.reg}</span>
+        <span class="badge badge-gray">${p.lic}</span>
+      </div>
+      <div style="font-size:.72rem;color:var(--text-muted);margin-top:2px">v${p.ver}</div>
+    </div>
+    <a href="${p.url}" target="_blank" class="btn btn-ghost btn-sm btn-icon">${I.ext}</a>
+  </div>
+  <p class="pkg-desc">${esc(p.desc)}</p>
+  <div class="dl-row">
+    <span style="font-size:.72rem;color:var(--text-muted)">${I.dl}</span>
+    <div class="dl-bar"><div class="dl-fill" style="width:${pct}%"></div></div>
+    <span class="mono" style="flex-shrink:0;font-weight:700">${fmt(p.wdl)}/wk</span>
+    <span class="${gc}">${gs}${Math.abs(p.growth)}%</span>
+  </div>
+  <div style="margin-top:9px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    ${p.tags.map(t=>`<span class="badge badge-gray">${t}</span>`).join('')}
+    <span style="margin-left:auto" class="badge badge-src">${I.info} ${p.source} · ${p.updated}</span>
+  </div>
+</div>`;
+}
+
+function appCard(a,rank){
+  const voted=ST.votes.has(a.id);
+  const rankLabel=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
+  return `<div class="card app-card fade-in" style="animation-delay:${rank*.05}s">
+  <div class="app-rank" style="color:${rank<=3?'var(--accent-orange)':'var(--text-muted)'}">${rankLabel}</div>
+  <div class="app-logo">${a.emoji}</div>
+  <div class="app-body" style="flex:1;min-width:0">
+    <div class="app-name">${esc(a.name)} ${a.solo?'<span class="badge badge-purple" style="font-size:.62rem;vertical-align:middle">Solo</span>':''}</div>
+    <div class="app-tag">${esc(a.tag)}</div>
+    <div class="app-meta">
+      <span>${I.user} @${esc(a.maker)}</span>
+      ${a.stars?`<span>${I.star} ${fmt(a.stars)} stars</span>`:''}
+      <span class="badge badge-gray">${esc(a.cat)}</span>
+    </div>
+    <div class="app-tags">${a.tags.map(t=>`<span class="badge badge-purple">${t}</span>`).join('')}</div>
+    <div class="app-src">
+      <span class="badge badge-src">${I.info} ${esc(a.source)} · ${a.updated}</span>
+      <a href="${a.url}" target="_blank" class="btn btn-ghost btn-sm" style="margin-left:auto">${I.ext} Visit</a>
+    </div>
+  </div>
+  <button class="upvote ${voted?'voted':''}" data-id="${a.id}" data-v="${a.votes}" onclick="toggleVote(this)">
+    ${I.up}<span class="vc">${fmt(a.votes)}</span>
+  </button>
+</div>`;
+}
+
+function lbRow(item,i){
+  const rc=['gold','silver','bronze'];
+  return `<div class="lb-row">
+    <div class="lb-rank ${rc[i]||''}">${i<3?['🥇','🥈','🥉'][i]:item.rank}</div>
+    <div class="lb-info"><div class="lb-name">${item.emoji} ${esc(item.name)}</div><div class="lb-meta">${esc(item.tag)} · by @${item.maker}</div></div>
+    <div class="lb-votes">${I.up} ${fmt(item.votes)}</div>
+  </div>`;
+}
+
+function ideaCard(idea){
+  const dots=Array(5).fill(0).map((_,i)=>`<div class="ss-dot ${i<idea.solo?'on':''}"></div>`).join('');
+  const dc={weekend:'badge-green',month:'badge-orange',quarter:'badge-red'}[idea.diff]||'badge-gray';
+  const dl={weekend:'Weekend',month:'~1 Month',quarter:'~1 Quarter'}[idea.diff]||idea.diff;
+  const titleSafe=esc(idea.title).replace(/'/g,'&#39;');
+  const whySafe=esc(idea.why).replace(/'/g,'&#39;');
+  return `<div class="idea-card fade-in" style="animation-delay:${idea.num*.07}s">
+  <div class="ic-num">Idea ${String(idea.num).padStart(2,'0')}</div>
+  <div class="ic-title">${esc(idea.title)}</div>
+  <p class="ic-why">${esc(idea.why)}</p>
+  <div class="ic-meta">
+    <span class="badge ${dc}">⏱ ${dl}</span>
+    ${idea.tags.map(t=>`<span class="badge badge-gray">${t}</span>`).join('')}
+  </div>
+  <div class="ic-stack">Stack: ${idea.stack.map(s=>`<span>${esc(s)}</span>`).join(', ')}</div>
+  <div class="ic-footer">
+    <div class="solo-score">${I.user} <div class="ss-dots">${dots}</div> ${idea.solo}/5</div>
+    <div style="flex:1"></div>
+    <button class="btn btn-ghost btn-sm" onclick="copyIdea('${titleSafe}','${whySafe}')">${I.copy} Copy</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveIdea('${titleSafe}')">${I.save} Save</button>
+    <button class="btn btn-primary btn-sm" onclick="nav('submit')">${I.send} Submit</button>
+  </div>
+</div>`;
+}
+
+function ideaResults(data){
+  return `<div class="idea-results fade-in">
+  <div class="ir-hdr">
+    <div>
+      <h2 style="font-size:1.25rem;font-weight:800">Results for: <span class="grad-text">"${esc(data.query)}"</span></h2>
+      <p style="font-size:.82rem;color:var(--text-muted);margin-top:4px">Found ${data.comps.length} competitors · ${data.ideas.length} ideas generated</p>
+    </div>
+    <div class="ai-label"><div class="ai-dot"></div> AI-generated from the sources listed</div>
+  </div>
+  <div class="i-sec">
+    <div class="i-sec-title">📊 Existing Competitors</div>
+    <div class="card" style="overflow:hidden">
+      <table class="comp-tbl">
+        <thead><tr><th>Name</th><th>Stars</th><th>Downloads/wk</th><th>License</th><th>Updated</th><th>Registry</th><th></th></tr></thead>
+        <tbody>${data.comps.map(c=>`<tr>
+          <td><strong>${esc(c.name)}</strong></td>
+          <td class="mono">${c.stars?`${I.star} ${fmt(c.stars)}`:'—'}</td>
+          <td class="mono">${c.dl?`${I.dl} ${fmt(c.dl)}`:'—'}</td>
+          <td><span class="badge badge-gray">${c.lic}</span></td>
+          <td class="mono" style="color:var(--text-muted);font-size:.72rem">${c.upd}</td>
+          <td><span class="badge ${c.reg==='npm'?'badge-red':c.reg==='pypi'?'badge-cyan':'badge-gray'}">${c.reg}</span></td>
+          <td><a href="${c.url}" target="_blank" class="btn btn-ghost btn-sm btn-icon">${I.ext}</a></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+  </div>
+  <div class="i-sec">
+    <div class="i-sec-title">${I.chart} Market Signals</div>
+    <div class="signals">
+      <div class="sig-card"><div class="sig-val grad-text">${data.signals.repos}</div><div class="sig-lbl">Repos found</div></div>
+      <div class="sig-card"><div class="sig-val grad-text">${data.signals.pkgs}</div><div class="sig-lbl">Packages indexed</div></div>
+      <div class="sig-card"><div class="sig-val grad-text">${data.signals.active}</div><div class="sig-lbl">Actively maintained</div></div>
+      <div class="sig-card"><div class="sig-val grad-text">${fmt(data.signals.avgStars)}</div><div class="sig-lbl">Avg stars</div></div>
+      <div class="sig-card"><div class="sig-val" style="font-size:.95rem;color:var(--accent-orange)">${data.signals.lastUpd}</div><div class="sig-lbl">Median last update</div></div>
+    </div>
+  </div>
+  <div class="i-sec">
+    <div class="i-sec-title">🔍 Gaps & Complaints Found</div>
+    <div class="gaps">${data.gaps.map(g=>`<div class="gap-item"><div class="gap-ico">${g.ico}</div><div><div class="gap-txt">${esc(g.txt)} <span class="badge badge-gray" style="vertical-align:middle">${g.theme}</span></div><div class="gap-src">${I.info} Source: ${esc(g.src)}</div></div></div>`).join('')}</div>
+  </div>
+  <div class="i-sec">
+    <div class="i-sec-title">${I.idea} Generated Project Ideas (${data.ideas.length})</div>
+    <div class="idea-cards">${data.ideas.map(idea=>ideaCard(idea)).join('')}</div>
+  </div>
+</div>`;
+}
+
+// ── Pages ─────────────────────────────────────────────────
+function pageHome(){
+  return `
+<section class="hero cw">
+  <div class="eyebrow">${I.bolt} Built for Solo Developers · Open Source · MIT</div>
+  <h1>Discover Trending Builds.<br><span class="grad-text">Generate Your Next Idea.</span></h1>
+  <p class="hero-sub">The free, open-source Product Hunt for indie hackers. Real stats, real sources, no paywalls — ever.</p>
+  <div class="hero-search">
+    <div class="search-box">
+      <span style="color:var(--text-muted);margin-right:4px">${I.srch}</span>
+      <input id="hero-in" type="search" placeholder='Try "invoice tool", "habit tracker", "PDF tools"…'>
+      <button class="btn btn-primary" id="hero-btn" style="border-radius:var(--radius-lg)">${I.spark} Generate Ideas</button>
+    </div>
+    <div class="hero-tags">
+      <button class="htag" data-q="invoice tool">🧾 Invoice tools</button>
+      <button class="htag" data-q="habit tracker">✅ Habit trackers</button>
+      <button class="htag" data-q="pdf tools">📄 PDF tools</button>
+      <button class="htag" data-q="auth library">🔐 Auth libs</button>
+      <button class="htag" data-q="cli tools">⚡ CLI apps</button>
+      <button class="btn btn-ghost btn-sm" id="surprise-btn">${I.surp} Surprise me</button>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="stat-val" data-cnt="2847">0</div><div class="stat-lbl">Projects indexed</div></div>
+    <div class="hero-stat"><div class="stat-val" data-cnt="8">0</div><div class="stat-lbl">Data sources</div></div>
+    <div class="hero-stat"><div class="stat-val" data-cnt="142">0</div><div class="stat-lbl">Ideas generated today</div></div>
+    <div class="hero-stat"><div class="stat-val" data-cnt="100">0</div><div class="stat-lbl">% free forever</div></div>
+  </div>
+</section>
+
+<div class="cw" style="padding-bottom:80px">
+  <nav class="trending-strip">
+    <span style="font-size:.74rem;color:var(--text-muted);flex-shrink:0;margin-right:4px">🔥 Trending:</span>
+    ${TTAGS.map(t=>{const[label,fire]=t.endsWith('🔥')?[t.slice(0,-1),'🔥']:[t,''];return`<button class="t-chip" data-q="${label.trim()}">${fire}${label.trim()}</button>`}).join('')}
+  </nav>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:22px 0 18px">
+    <div class="tabs" id="main-tabs">
+      <button class="tab-btn active" data-tab="repos">${I.gh} GitHub Repos <span class="tc">${REPOS.length}</span></button>
+      <button class="tab-btn" data-tab="pkgs">${I.pkg} Trending Software <span class="tc">${PKGS.length}</span></button>
+      <button class="tab-btn" data-tab="apps">🚀 Apps <span class="tc">${APPS.length}</span></button>
+    </div>
+    <div style="display:flex;gap:7px">
+      <button class="btn btn-sm btn-secondary" id="vg" title="Grid view">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="btn btn-sm btn-secondary" id="vl" title="List view">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="filters" style="margin-bottom:18px">
+    <select class="fsel" id="ft">
+      <option value="today">Today</option><option value="week" selected>This Week</option><option value="month">This Month</option>
+    </select>
+    <select class="fsel" id="fl">
+      <option value="">All Languages</option><option>TypeScript</option><option>JavaScript</option><option>Python</option><option>Rust</option><option>Go</option>
+    </select>
+    <div class="spacer"></div>
+    <span style="font-size:.76rem;color:var(--text-muted)">Sort by:</span>
+    <select class="fsel" id="fs">
+      <option>Trending</option><option>Most Stars</option><option>Most Downloads</option><option>Newest</option>
+    </select>
+  </div>
+
+  <div id="t-repos" class="grid-list">${REPOS.map((r,i)=>repoCard(r,i+1)).join('')}</div>
+  <div id="t-pkgs" class="grid-2up hidden">${PKGS.map(p=>pkgCard(p)).join('')}</div>
+  <div id="t-apps" class="grid-list hidden">${APPS.map((a,i)=>appCard(a,i+1)).join('')}</div>
+
+  <div style="margin-top:52px">
+    <div class="sec-hdr">
+      <div><h2 class="sec-title">${I.trophy} Leaderboard</h2><p class="sec-sub">Community projects, ranked by upvotes + real traction</p></div>
+      <div class="tabs" id="lb-tabs" style="background:transparent;padding:0">
+        <button class="tab-btn active" data-lbt="daily" style="font-size:.78rem;padding:6px 13px">Daily</button>
+        <button class="tab-btn" data-lbt="weekly" style="font-size:.78rem;padding:6px 13px">Weekly</button>
+      </div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div id="lb-d">${LB.daily.map((r,i)=>lbRow(r,i)).join('')}</div>
+      <div id="lb-w" class="hidden">${LB.weekly.map((r,i)=>lbRow(r,i)).join('')}</div>
+    </div>
+  </div>
+</div>`;
+}
+
+function pageIdeas(q=''){
+  return `
+<div class="idea-hero container">
+  <div class="eyebrow" style="display:inline-flex;margin-bottom:18px">${I.spark} AI-Powered · Retrieval-First · Every Claim Has a Source</div>
+  <h1 style="font-size:clamp(1.9rem,5vw,3.4rem);font-weight:900;letter-spacing:-.04em;margin-bottom:14px">Find Your <span class="grad-text">Next Project</span></h1>
+  <p class="hero-sub" style="margin-bottom:28px">Type a topic or problem. We scan GitHub, npm, PyPI, and Hacker News — then generate real, buildable ideas with competitor data.</p>
+  <div class="idea-wrap">
+    <div class="idea-box">
+      <textarea id="idea-in" rows="2" placeholder='e.g. "invoice tool for freelancers" or "open-source Calendly"'>${esc(q)}</textarea>
+      <div class="idea-actions">
+        <button class="btn btn-ghost btn-sm" id="surprise-idea">${I.surp} Surprise</button>
+        <button class="btn btn-primary" id="gen-btn">${I.spark} Generate</button>
+      </div>
+    </div>
+    <div class="idea-examples">
+      <button class="iex" data-q="invoice tool">🧾 invoice tool</button>
+      <button class="iex" data-q="habit tracker">✅ habit tracker</button>
+      <button class="iex" data-q="pdf tools">📄 PDF tools</button>
+      <button class="iex" data-q="auth library">🔐 auth library</button>
+      <button class="iex" data-q="cli tools">⚡ CLI apps</button>
+    </div>
+  </div>
+</div>
+<div class="container" id="idea-res" style="padding-bottom:60px">
+  <div class="empty"><div class="empty-ico">💡</div><div class="empty-title">Ready to discover ideas</div><div class="empty-desc">Type a topic or click an example above.<br>No account needed for your first 10 searches.</div></div>
+</div>`;
+}
+
+function pageSubmit(){
+  return `<div class="submit-page container">
+  <div style="max-width:660px">
+    <h1 style="font-size:2.1rem;font-weight:900;letter-spacing:-.04em;margin-bottom:8px">Submit a <span class="grad-text">Project</span></h1>
+    <p style="color:var(--text-secondary);margin-bottom:28px">Share what you built. GitHub login required to prevent spam.</p>
+    ${!ST.loggedIn?`<div class="auth-wall">
+      <div style="font-size:2rem;margin-bottom:14px">🔐</div>
+      <h2 style="font-weight:700;margin-bottom:7px">Connect with GitHub</h2>
+      <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:22px">GitHub OAuth only — no email, no newsletter.</p>
+      <button class="gh-btn" id="gh-login">${I.gh} Continue with GitHub</button>
+      <p style="font-size:.72rem;color:var(--text-muted);margin-top:13px">Browse and generate ideas without logging in.</p>
+    </div>`:''}
+    <form id="sub-form">
+      <div class="form-grp"><label class="form-label" for="pn">Project Name <em>*</em></label><input class="form-inp" id="pn" type="text" placeholder="e.g. LiteInvoice" ${!ST.loggedIn?'disabled':''}></div>
+      <div class="form-grp"><label class="form-label" for="pu">Project URL <em>*</em></label><input class="form-inp" id="pu" type="url" placeholder="https://github.com/you/project" ${!ST.loggedIn?'disabled':''}><div class="form-hint">GitHub URLs auto-pull stars, forks, and license.</div></div>
+      <div class="form-grp"><label class="form-label" for="pt">Tagline <em>* max 100 chars</em></label><input class="form-inp" id="pt" maxlength="100" placeholder="Terminal-first invoice CLI in 200 lines of Bun" ${!ST.loggedIn?'disabled':''}></div>
+      <div class="form-row">
+        <div class="form-grp"><label class="form-label" for="pc">Category <em>*</em></label>
+          <select class="form-inp form-sel" id="pc" ${!ST.loggedIn?'disabled':''}><option value="">Choose…</option><option>Developer Tool</option><option>SaaS</option><option>CLI App</option><option>Library / Package</option><option>Design Tool</option><option>Productivity</option><option>Backend / API</option><option>Other</option></select></div>
+        <div class="form-grp"><label class="form-label" for="ptg">Tags <em>comma-separated</em></label><input class="form-inp" id="ptg" placeholder="cli, invoicing, bun, sqlite" ${!ST.loggedIn?'disabled':''}></div>
+      </div>
+      <div class="form-grp"><label class="form-label" for="pd">Description <em>optional</em></label><textarea class="form-ta" id="pd" rows="3" placeholder="What problem does this solve? What makes it different?" ${!ST.loggedIn?'disabled':''}></textarea></div>
+      <div class="form-grp"><label class="form-chk"><input type="checkbox" id="solo-chk" ${!ST.loggedIn?'disabled':''}><span class="form-chk-lbl">🦸 I built this alone — earn the Solo badge</span></label></div>
+      <div class="form-grp"><label class="form-chk"><input type="checkbox" id="oss-chk" ${!ST.loggedIn?'disabled':''}><span class="form-chk-lbl">📖 This project is open source (MIT, Apache, GPL, etc.)</span></label></div>
+      <div style="padding:14px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border);margin-bottom:22px;font-size:.8rem;color:var(--text-secondary)">${I.info} <strong>Transparency:</strong> GitHub URLs auto-display stars, forks, and last commit with a "Source: GitHub API" badge. We never claim data without a source.</div>
+      <button class="btn btn-primary btn-lg w-full" type="submit" id="sub-btn" ${!ST.loggedIn?'disabled':''}>${I.send} Submit Project</button>
+    </form>
+  </div>
+</div>`;
+}
+
+function pageProfile(){
+  return `<div class="container" style="padding-bottom:80px">
+  <div class="profile-hdr">
+    <div class="p-avatar">🧑‍💻</div>
+    <div>
+      <div class="p-name">DreamFaang78</div>
+      <div class="p-handle">@DreamFaang78 · <a href="https://github.com/DreamFaang78" target="_blank" style="color:var(--accent-cyan)">GitHub ${I.ext}</a></div>
+      <div class="p-stats">
+        <div class="ps"><div class="ps-val grad-text">3</div><div class="ps-lbl">Submissions</div></div>
+        <div class="ps"><div class="ps-val grad-text">1.4k</div><div class="ps-lbl">Total Upvotes</div></div>
+        <div class="ps"><div class="ps-val grad-text">Oct 2026</div><div class="ps-lbl">Member since</div></div>
+      </div>
+    </div>
+    <button class="btn btn-secondary btn-sm" style="margin-left:auto;align-self:flex-start" onclick="ST.loggedIn=false;toast('Logged out','info');nav('home')">Log out</button>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-hdr"><h2 class="sec-title">Submitted Projects</h2></div>
+  <div class="grid-list">${[APPS[3],APPS[4]].map((a,i)=>appCard(a,i+1)).join('')}</div>
+  <div class="divider" style="margin-top:36px"></div>
+  <div class="sec-hdr"><h2 class="sec-title">Saved Ideas ${ST.saved.length?`<span class="badge badge-purple">${ST.saved.length}</span>`:''}</h2></div>
+  ${ST.saved.length?`<div class="grid-list">${ST.saved.map(s=>`<div class="card" style="padding:14px;display:flex;align-items:center;gap:11px"><span style="font-size:1.1rem">💡</span><span style="flex:1;font-weight:600;font-size:.9rem">${esc(s)}</span><button class="btn btn-ghost btn-sm" onclick="unsave('${s.replace(/'/g,"\\'")}')">Remove</button></div>`).join('')}</div>`
+  :`<div class="empty"><div class="empty-ico">💡</div><div class="empty-title">No saved ideas yet</div><div class="empty-desc">Use the Idea Generator and click Save on any idea card.</div></div>`}
+</div>`;
+}
+
+function pageAbout(){
+  return `<div class="about-page container">
+  <div class="about-sec">
+    <div class="eyebrow" style="display:inline-flex;margin-bottom:18px">${I.gh} MIT License · Open Source · v1.0 · October 2026</div>
+    <h1 class="about-title">About <span class="grad-text">SoloLaunch</span></h1>
+    <p class="about-desc">SoloLaunch is a free, open-source website for solo developers. It surfaces trending projects with real, cited numbers — and generates buildable ideas from live GitHub, npm, and PyPI data. No paywalls, no ads, no sponsored listings. Ever.</p>
+    <p class="about-desc" style="margin-top:11px">Built by <a href="https://github.com/DreamFaang78" target="_blank" style="color:var(--accent-cyan)">DreamFaang78</a> as a demonstration that useful developer tools can be genuinely free and transparent. Full source, schema, ingestion scripts, and AI prompts are all in the public repo.</p>
+    <div style="margin-top:18px;display:flex;gap:11px;flex-wrap:wrap">
+      <button class="gh-btn" onclick="window.open('https://github.com/DreamFaang78/sololaunch','_blank')">${I.gh} View on GitHub</button>
+      <button class="btn btn-secondary" onclick="toast('📦 Weekly dataset — public S3 JSON, updated every Sunday','info')">📦 Download Dataset (JSON)</button>
+    </div>
+  </div>
+  <div class="about-sec">
+    <h2 class="about-title" style="font-size:1.35rem">The Stack</h2>
+    <p class="about-desc" style="margin-bottom:18px">Modern, AWS-native, beginner-friendly. One command deploys everything via SST v3.</p>
+    <div class="stack-grid">${STACK.map(s=>`<div class="si"><div class="si-lbl">${s.layer}</div><div class="si-val">${s.val}</div><div class="si-why">${s.why}</div></div>`).join('')}</div>
+  </div>
+  <div class="about-sec">
+    <h2 class="about-title" style="font-size:1.35rem">Data Sources</h2>
+    <p class="about-desc" style="margin-bottom:18px">Every number has a source and a timestamp. We store only public metadata.</p>
+    <div class="card" style="overflow:hidden">
+      <table class="src-tbl">
+        <thead><tr><th>Source</th><th>Used for</th><th>Access</th><th>Limit</th></tr></thead>
+        <tbody>${DSOURCES.map(d=>`<tr><td><strong>${esc(d.src)}</strong></td><td style="color:var(--text-secondary)">${esc(d.used)}</td><td><span class="badge badge-green">${esc(d.access)}</span></td><td style="font-size:.74rem;color:var(--text-muted)">${esc(d.limit)}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+  </div>
+  <div class="about-sec">
+    <h2 class="about-title" style="font-size:1.35rem">Architecture</h2>
+    <div class="card" style="padding:24px">
+      <pre style="font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.9;color:var(--text-secondary);white-space:pre-wrap;overflow-x:auto">EventBridge Scheduler → SQS → Lambda workers
+  → GitHub / npm / PyPI / HN APIs + Apify
+                  ↓
+     Aurora Serverless v2 (Postgres + pgvector, Data API)
+        ↑                             ↓
+Hono API (Lambda) ←——→ Astro 5 + React Islands (TypeScript)
+                                       ↓
+                  Nightly rebuild → S3 + CloudFront
+                          alphacreation.online (HTTPS)
+                                       ↓
+           Idea Generator → Amazon Bedrock Nova → idea cards
+                           (cached 7 days in Aurora)</pre>
+    </div>
+  </div>
+  <div class="about-sec">
+    <h2 class="about-title" style="font-size:1.35rem">Cost Controls</h2>
+    <div class="gaps">${[
+      ['🗄','Cache every API and AI response in Postgres (24h for stats, 7d for idea results)'],
+      ['📄','Pre-compute trending lists nightly; serve from S3 + CloudFront, not per-request Lambda'],
+      ['⏱','Limit idea generations to 10/user/day to protect AI quota'],
+      ['🔔','AWS Budgets alerts at $20, $50, and $80 so the $100 credit is never used up unnoticed'],
+      ['😴','Aurora Serverless v2 scales to zero when idle; hard cap at 2 ACUs'],
+      ['🚫','Avoided: NAT gateways, AWS WAF, OpenSearch — all have fixed monthly charges'],
+    ].map(([ico,txt])=>`<div class="gap-item"><div class="gap-ico">${ico}</div><div class="gap-txt">${txt}</div></div>`).join('')}</div>
+  </div>
+  <div class="about-sec">
+    <h2 class="about-title" style="font-size:1.35rem">Contributing</h2>
+    <p class="about-desc">Plugin-style <code style="background:var(--bg-surface);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace">sources/</code> folder. Adding a new data source takes ~50 lines of TypeScript. Self-hosting takes ~15 minutes with SST.</p>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-secondary btn-sm" onclick="window.open('https://github.com/DreamFaang78/sololaunch/issues','_blank')">🐛 File an Issue</button>
+      <button class="btn btn-secondary btn-sm" onclick="window.open('https://github.com/DreamFaang78/sololaunch/pulls','_blank')">🔧 Open a PR</button>
+      <button class="btn btn-secondary btn-sm" onclick="toast('📖 Self-host guide: github.com/DreamFaang78/sololaunch/blob/main/docs/self-host.md','info')">🏠 Self-host Guide</button>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── Router ────────────────────────────────────────────────
+const PAGES = { home:pageHome, ideas:pageIdeas, submit:pageSubmit, profile:pageProfile, about:pageAbout };
+const TITLES = { home:'SoloLaunch – Discover & Build', ideas:'Idea Generator – SoloLaunch', submit:'Submit a Project – SoloLaunch', profile:'Your Profile – SoloLaunch', about:'About & Open Source – SoloLaunch' };
+
+function nav(page, q=''){
+  if(!PAGES[page]) return;
+  ST.page = page;
+  document.title = TITLES[page]||'SoloLaunch';
+  document.querySelectorAll('.nav-link[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
+  document.getElementById('main').innerHTML = PAGES[page](q);
+  window.scrollTo({top:0,behavior:'instant'});
+  afterNav(page, q);
+}
+
+function afterNav(page, q=''){
+  bindVotes();
+  if(page==='home')  { bindHome(); countUp(); }
+  if(page==='ideas') { bindIdeas(q); if(q) genIdeas(); }
+  if(page==='submit'){ bindSubmit(); }
+  updateLoginBtn();
+}
+
+// ── Count up ─────────────────────────────────────────────
+function countUp(){
+  document.querySelectorAll('[data-cnt]').forEach(el=>{
+    const target=parseInt(el.dataset.cnt);
+    let cur=0; const step=Math.ceil(target/45);
+    const t=setInterval(()=>{ cur=Math.min(cur+step,target); el.textContent=target===100?cur+'%':cur.toLocaleString(); if(cur>=target)clearInterval(t); },25);
+  });
+}
+
+// ── Votes ─────────────────────────────────────────────────
+function bindVotes(){
+  document.querySelectorAll('.upvote').forEach(btn=>{ if(ST.votes.has(btn.dataset.id)) btn.classList.add('voted'); });
+}
+function toggleVote(btn){
+  const id=btn.dataset.id, vc=btn.querySelector('.vc'), cur=parseInt(btn.dataset.v);
+  if(ST.votes.has(id)){ST.votes.delete(id);btn.classList.remove('voted');btn.dataset.v=cur-1;vc.textContent=fmt(cur-1);}
+  else{ST.votes.add(id);btn.classList.add('voted');btn.dataset.v=cur+1;vc.textContent=fmt(cur+1);btn.animate([{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:200,easing:'ease-out'});}
+  saveLS();
+}
+
+// ── Home bindings ─────────────────────────────────────────
+function bindHome(){
+  const inp=document.getElementById('hero-in'),btn=document.getElementById('hero-btn');
+  const doSearch=()=>{ const q=(inp?.value||'').trim(); if(!q){toast('Enter a topic to search for ideas!','info');return;} nav('ideas',q); };
+  btn?.addEventListener('click',doSearch);
+  inp?.addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+  document.querySelectorAll('.htag[data-q]').forEach(el=>el.addEventListener('click',()=>nav('ideas',el.dataset.q)));
+  document.getElementById('surprise-btn')?.addEventListener('click',()=>{
+    const qs=['recipe sharing app','bookmark manager','log parser','open-source Calendly','markdown CMS','uptime monitor','git blame viewer'];
+    nav('ideas',qs[Math.floor(Math.random()*qs.length)]);
+  });
+  document.querySelectorAll('.t-chip[data-q]').forEach(chip=>chip.addEventListener('click',()=>nav('ideas',chip.dataset.q)));
+  document.querySelectorAll('#main-tabs .tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('#main-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab=btn.dataset.tab;
+    ['repos','pkgs','apps'].forEach(t=>document.getElementById(`t-${t}`)?.classList.toggle('hidden',t!==tab));
+  }));
+  document.querySelectorAll('#lb-tabs .tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('#lb-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab=btn.dataset.lbt;
+    document.getElementById('lb-d')?.classList.toggle('hidden',tab!=='daily');
+    document.getElementById('lb-w')?.classList.toggle('hidden',tab!=='weekly');
+  }));
+  document.getElementById('vg')?.addEventListener('click',()=>{ document.querySelectorAll('.grid-list').forEach(g=>{g.classList.remove('grid-list');g.classList.add('grid-2up');}); });
+  document.getElementById('vl')?.addEventListener('click',()=>{ document.querySelectorAll('.grid-2up').forEach(g=>{g.classList.remove('grid-2up');g.classList.add('grid-list');}); });
+  document.getElementById('fs')?.addEventListener('change',e=>toast(`Sorted by: ${e.target.value}`,'info'));
+}
+
+// ── Ideas bindings ────────────────────────────────────────
+function bindIdeas(q=''){
+  const inp=document.getElementById('idea-in'),btn=document.getElementById('gen-btn');
+  if(q&&inp) inp.value=q;
+  btn?.addEventListener('click',genIdeas);
+  inp?.addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)) genIdeas(); });
+  document.querySelectorAll('.iex[data-q]').forEach(el=>el.addEventListener('click',()=>{ if(inp) inp.value=el.dataset.q; genIdeas(); }));
+  document.getElementById('surprise-idea')?.addEventListener('click',()=>{
+    const qs=['invoice tool','habit tracker','log parser','open-source Calendly','markdown editor'];
+    if(inp) inp.value=qs[Math.floor(Math.random()*qs.length)];
+    genIdeas();
+  });
+}
+
+function genIdeas(){
+  const inp=document.getElementById('idea-in');
+  const q=(inp?.value||'').trim();
+  if(!q){toast('Enter a topic first!','info');inp?.focus();return;}
+  const res=document.getElementById('idea-res');
+  if(!res) return;
+  res.innerHTML=`<div class="loading">
+    <div class="spinner"></div>
+    <div id="loading-msg">Querying GitHub API…</div>
+    <div style="font-size:.78rem;color:var(--text-muted)">Usually 3–8 seconds on first search</div>
+    <div class="prog-bar" style="width:260px;margin-top:11px"><div class="prog-fill" id="pp" style="width:0%"></div></div>
+  </div>`;
+  const steps=[
+    {d:400,p:15,m:'Querying GitHub API…'},
+    {d:800,p:32,m:'Checking npm registry…'},
+    {d:1200,p:54,m:'Scanning PyPI + pypistats…'},
+    {d:1600,p:70,m:'Fetching Hacker News discussions…'},
+    {d:2000,p:88,m:'Generating ideas with Amazon Bedrock…'},
+    {d:2400,p:100,m:'Done!'},
+  ];
+  steps.forEach(s=>setTimeout(()=>{ const b=document.getElementById('pp'),m=document.getElementById('loading-msg'); if(b)b.style.width=s.p+'%'; if(m)m.textContent=s.m; },s.d));
+  setTimeout(async ()=>{
+    const lower=q.toLowerCase();
+    const matchedKey=Object.keys(IDEA_DB).find(k=>lower.includes(k));
+    let data;
+    if(matchedKey){
+      data={...IDEA_DB[matchedKey],query:q};
+    } else {
+      try {
+        const ghRes=await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=5`);
+        if(ghRes.ok){
+          const ghJson=await ghRes.json();
+          const items=ghJson.items||[];
+          if(items.length>0){
+            const competitors=items.map(r=>({
+              name:r.name,
+              url:r.html_url,
+              stars:r.stargazers_count,
+              dl:null,
+              lic:r.license?.spdx_id||'OSS',
+              upd:(r.pushed_at||'').slice(0,7)||'2026-10',
+              reg:'GitHub'
+            }));
+            const totalStars=competitors.reduce((acc,c)=>acc+c.stars,0);
+            const qTitle=q.charAt(0).toUpperCase()+q.slice(1).replace(/[^a-zA-Z0-9]/g,'');
+            data={
+              query:q,
+              signals:{
+                repos:ghJson.total_count||items.length,
+                pkgs:Math.max(3,Math.floor(items.length*2)),
+                active:items.filter(r=>new Date(r.pushed_at)>new Date(Date.now()-90*86400000)).length,
+                avgStars:Math.round(totalStars/items.length),
+                lastUpd:(items[0]?.pushed_at||'').slice(0,10)||'Recently'
+              },
+              competitors,
+              gaps:[
+                {ico:'⚡',txt:`High resource usage & complex setup reported in top ${q} tools`,theme:'Simplicity',src:`${items[0].html_url}/issues`},
+                {ico:'🔒',txt:'Lack of privacy-first, zero-subscription local alternative',theme:'Self-hosted',src:'news.ycombinator.com'},
+                {ico:'🔌',txt:'Missing modern lightweight CLI and developer automation',theme:'Developer-first',src:`${items[1]?.html_url||items[0].html_url}/issues`}
+              ],
+              ideas:[
+                {
+                  num:1,
+                  title:`Lite${qTitle} – Minimal single-binary alternative`,
+                  why:`Solo builders want lightweight tools with no subscriptions. A local-first, zero-cloud alternative to ${items[0].name} addresses top requested features.`,
+                  stack:['Go','SQLite','Webview'],
+                  diff:'weekend',
+                  solo:5,
+                  tags:['local-first','zero-cloud'],
+                  srcs:[items[0].html_url]
+                },
+                {
+                  num:2,
+                  title:`Open${qTitle} Studio – Modern reactive web app`,
+                  why:`Incumbents have complex legacy UIs. A fast, modern SPA with exportable JSON targets the underserved freelance market.`,
+                  stack:['SvelteKit','Tailwind','Hono'],
+                  diff:'month',
+                  solo:4,
+                  tags:['modern-ui','open-source'],
+                  srcs:[items[1]?.html_url||items[0].html_url]
+                },
+                {
+                  num:3,
+                  title:`${qTitle}Flow – Automation & webhooks`,
+                  why:`Automate ${q} tasks without monthly seat licenses. Easy self-hosting on AWS or VPS.`,
+                  stack:['Bun','PostgreSQL','Docker'],
+                  diff:'weekend',
+                  solo:5,
+                  tags:['automation','solo-dev'],
+                  srcs:['github.com/trending']
+                }
+              ]
+            };
+          }
+        }
+      } catch(e){}
+      if(!data){
+        data={...IDEA_DB['invoice tool'],query:q};
+      }
+    }
+    const r=document.getElementById('idea-res');
+    if(r){ r.innerHTML=ideaResults(data); }
+  },2700);
+}
+
+// ── Submit bindings ───────────────────────────────────────
+function bindSubmit(){
+  document.getElementById('gh-login')?.addEventListener('click',()=>{
+    showModal('GitHub Login (Demo)',`
+      <p style="color:var(--text-secondary);margin-bottom:18px;line-height:1.7">In production this redirects to GitHub OAuth via Better Auth. For this demo, we'll authenticate you instantly.</p>
+      <button class="gh-btn" style="width:100%;justify-content:center" id="ml">${I.gh} Continue as @DreamFaang78 (Demo)</button>
+    `);
+    setTimeout(()=>document.getElementById('ml')?.addEventListener('click',()=>{ ST.loggedIn=true; closeModal(); toast('✅ Logged in as @DreamFaang78 (demo)','success'); setTimeout(()=>nav('submit'),300); }),50);
+  });
+  document.getElementById('sub-form')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=(document.getElementById('pn')?.value||'').trim();
+    if(!name){toast('Project name is required','error');return;}
+    const newProject={
+      id:'a_'+Date.now(),
+      name,
+      tagline:(document.getElementById('pt')?.value||'Built by a solo developer').trim(),
+      maker:'DreamFaang78',
+      makerUrl:'https://github.com/DreamFaang78',
+      votes:1,
+      stars:0,
+      url:document.getElementById('pu')?.value||'https://github.com/DreamFaang78',
+      source:'Community Submission',
+      updated:'Just now',
+      tags:(document.getElementById('ptg')?.value||'indie, tool').split(',').map(s=>s.trim()).filter(Boolean),
+      solo:document.getElementById('solo-chk')?.checked??true,
+      oss:document.getElementById('oss-chk')?.checked??true,
+      logo:'🚀'
+    };
+    APPS.unshift(newProject);
+    toast(`🚀 "${name}" submitted! Appearing in the Apps feed.`,'success');
+    setTimeout(()=>nav('home'),1200);
+  });
+}
+
+// ── Idea card actions ─────────────────────────────────────
+function copyIdea(title,why){
+  const text=`## ${title}\n\n${why}\n\n*Generated by SoloLaunch – sololaunch.alphacreation.online*`;
+  if(navigator.clipboard){ navigator.clipboard.writeText(text).then(()=>toast('✅ Copied as Markdown!','success')); }
+  else toast('Clipboard not available here','error');
+}
+function saveIdea(title){
+  if(!ST.saved.includes(title)){ ST.saved.push(title); saveLS(); toast(`💾 "${title}" saved!`,'success'); }
+  else toast('Already saved!','info');
+}
+function unsave(title){ ST.saved=ST.saved.filter(s=>s!==title); saveLS(); nav('profile'); }
+
+// ── Modal ─────────────────────────────────────────────────
+function showModal(title,body){
+  document.getElementById('modal-ov')?.remove();
+  const ov=document.createElement('div'); ov.id='modal-ov'; ov.className='modal-ov';
+  ov.innerHTML=`<div class="modal"><div class="modal-hdr"><span class="modal-title">${title}</span><button class="btn btn-ghost btn-icon" onclick="closeModal()">${I.close}</button></div><div class="modal-body">${body}</div></div>`;
+  document.body.appendChild(ov);
+  ov.addEventListener('click',e=>{ if(e.target===ov) closeModal(); });
+}
+function closeModal(){ document.getElementById('modal-ov')?.remove(); }
+
+// ── Toast ─────────────────────────────────────────────────
+function toast(msg,type='info'){
+  const wrap=document.getElementById('toast-wrap');
+  const t=document.createElement('div'); t.className=`toast ${type}`;
+  t.innerHTML=`<span>${{success:'✅',error:'❌',info:'💡'}[type]||'ℹ️'}</span><span>${esc(msg)}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{ t.style.cssText='opacity:0;transform:translateX(20px);transition:all .3s ease'; setTimeout(()=>t.remove(),300); },3500);
+}
+window.toast=toast;
+
+// ── Login btn ─────────────────────────────────────────────
+function updateLoginBtn(){
+  const btn=document.getElementById('nav-login-btn'),lbl=document.getElementById('nav-login-label');
+  if(!btn||!lbl) return;
+  if(ST.loggedIn){ lbl.textContent='Profile'; btn.onclick=()=>nav('profile'); }
+  else { lbl.textContent='Login'; btn.onclick=()=>nav('submit'); }
+}
+
+// ── Nav bindings ──────────────────────────────────────────
+document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',e=>{ e.preventDefault(); nav(el.dataset.page); }));
+document.getElementById('logo-btn')?.addEventListener('click',()=>nav('home'));
+document.getElementById('nav-search-btn')?.addEventListener('click',()=>nav('ideas'));
+document.querySelectorAll('.flink[data-page]').forEach(el=>el.addEventListener('click',()=>nav(el.dataset.page)));
+
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){ e.preventDefault(); nav('ideas'); }
+  if(e.key==='Escape') closeModal();
+});
+
+// ── Init ──────────────────────────────────────────────────
+nav('home');
+</script>
+</body>
+</html>

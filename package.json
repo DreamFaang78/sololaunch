@@ -1,0 +1,53 @@
+{
+  "name": "sololaunch",
+  "version": "1.0.0",
+  "description": "The free, open-source Product Hunt + Retrieval-First Idea Generator for solo developers",
+  "author": "DreamFaang78 (https://github.com/DreamFaang78)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DreamFaang78/sololaunch.git"
+  },
+  "homepage": "https://sololaunch.alphacreation.online",
+  "type": "module",
+  "scripts": {
+    "dev": "sst dev",
+    "build": "sst deploy --stage production",
+    "deploy": "sst deploy --stage production",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "ingest": "node --loader ts-node/esm src/ingestion/runner.ts",
+    "export-data": "node --loader ts-node/esm scripts/export-dataset.ts",
+    "preview": "npx serve ."
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.750.0",
+    "@aws-sdk/client-rds-data": "^3.750.0",
+    "@aws-sdk/client-s3": "^3.750.0",
+    "@aws-sdk/client-sqs": "^3.750.0",
+    "drizzle-orm": "^0.39.0",
+    "hono": "^4.7.0",
+    "postgres": "^3.4.5",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "drizzle-kit": "^0.30.4",
+    "sst": "^3.9.0",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "sololaunch",
+    "solo-developer",
+    "indie-hacker",
+    "product-hunt",
+    "idea-generator",
+    "open-source",
+    "github-trending",
+    "aws",
+    "sst",
+    "hono",
+    "drizzle-orm"
+  ]
+}
